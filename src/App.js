@@ -24,22 +24,23 @@ function reducer(state, { type, payload }) {
       return {
         ...state, currentOperand: `${state.currentOperand || ""}${payload.digit}`,
       }
+
     case ACTIONS.CLEAR:
       return {};
     case ACTIONS.DELETE_DIGIT:
-      if(state.overwrite){
-        return{
-          ...state,
-          overwrite:false,
-          currentOperand:null,
-        }
-      }
-        if(state.currentOperand==null) return state;
-        if(state.currentOperand.length===1) return {...state,currentOperand:null};
+      if (state.overwrite) {
         return {
           ...state,
-          currentOperand:state.currentOperand.slice(0,-1)
+          overwrite: false,
+          currentOperand: null,
         }
+      }
+      if (state.currentOperand == null) return state;
+      if (state.currentOperand.length === 1) return { ...state, currentOperand: null };
+      return {
+        ...state,
+        currentOperand: state.currentOperand.slice(0, -1)
+      }
     case ACTIONS.EVALUATE:
       if (state.operation == null || state.currentOperand == null || state.previousOperand == null) {
         return state;
@@ -75,7 +76,6 @@ function reducer(state, { type, payload }) {
   }
 }
 function evaluate(state) {
-  console.log("hi")
   const pre = parseFloat(state.previousOperand);
   const cur = parseFloat(state.currentOperand);
   if (isNaN(pre) || isNaN(cur)) return "";
@@ -96,13 +96,13 @@ function evaluate(state) {
   }
   return computation.toString();
 }
-const INTEGER_FORMATTER = new Intl.NumberFormat("en-in",{
-  maximumFractionDigits:0,
+const INTEGER_FORMATTER = new Intl.NumberFormat("en-in", {
+  maximumFractionDigits: 0,
 })
-function formatOperand(operand){
-  if(operand == null) return 
-  const [integer,decimal] = operand.split('.');
-  if(decimal==null) return INTEGER_FORMATTER.format(integer);
+function formatOperand(operand) {
+  if (operand == null) return
+  const [integer, decimal] = operand.split('.');
+  if (decimal == null) return INTEGER_FORMATTER.format(integer);
   return `${INTEGER_FORMATTER.format(integer)}.${decimal}`;
 }
 function App() {
@@ -114,7 +114,7 @@ function App() {
         <div className='current-operand'>{formatOperand(currentOperand)}</div>
       </div>
       <button className='span-two' onClick={() => dispatch({ type: ACTIONS.CLEAR })}>AC</button>
-      <button onClick={()=> dispatch({type:ACTIONS.DELETE_DIGIT})}>DEL</button>
+      <button onClick={() => dispatch({ type: ACTIONS.DELETE_DIGIT })}>DEL</button>
       {/* <DigitButton digit={'\u00F7'} dispatch={dispatch}>{'\u00F7'}</DigitButton> */}
       <OperationButton operation={'\u00F7'} dispatch={dispatch}>{'\u00F7'}</OperationButton>
       <DigitButton digit="1" dispatch={dispatch}>{'\u00F7'}</DigitButton>
